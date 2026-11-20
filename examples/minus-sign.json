@@ -1,0 +1,15 @@
+{
+  "document": "Inventory adjustment",
+  "checks": [
+    {
+      "page": 1,
+      "label": "Part number",
+      "text": "CP-82"
+    },
+    {
+      "page": 1,
+      "label": "Signed change",
+      "text": "-18"
+    }
+  ]
+}

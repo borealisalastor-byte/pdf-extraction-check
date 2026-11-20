@@ -1,0 +1,20 @@
+{
+  "document": "Dock allocations",
+  "checks": [
+    {
+      "page": 1,
+      "label": "West allocation",
+      "text": "West dock 14 pallets"
+    },
+    {
+      "page": 1,
+      "label": "East allocation",
+      "text": "East dock 32 pallets"
+    },
+    {
+      "page": 1,
+      "label": "North allocation",
+      "text": "North dock 8 pallets"
+    }
+  ]
+}

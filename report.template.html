@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light"><title>PDF extraction check</title>
+<style>
+:root{--ink:#152d34;--soft:#49616a;--line:#d1dcda;--paper:#fff;--bg:#f0f4f1;--pass:#16624c;--pass-bg:#e7f5ed;--fail:#993319;--fail-bg:#fff0e8;--mono:"IBM Plex Mono",ui-monospace,Consolas,monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,"Segoe UI",system-ui,sans-serif;line-height:1.45}
+header{background:#192f36;color:#fff}header>div,main{max-width:1140px;margin:auto;padding:0 28px}header>div{height:58px;display:flex;align-items:center;gap:12px;font-size:15px;font-weight:650;letter-spacing:.005em}
+.brand-mark{display:grid;place-items:center;width:26px;height:28px;background:#d8ee82;color:#20382f;border-radius:4px;font:700 15px var(--mono)}
+main{padding-bottom:40px}.intro{display:flex;align-items:end;justify-content:space-between;gap:20px;padding:32px 0 23px}
+h1,h2,p{margin:0}h1{font-size:clamp(29px,4.6vw,49px);font-weight:660;letter-spacing:-.045em;line-height:1.1}.sub{font-size:15px;color:var(--soft);margin-top:8px}
+.controls{display:flex;flex-wrap:wrap;gap:3px;background:#dce5df;border:1px solid #c4d2cb;border-radius:9px;padding:3px}
+button{font:inherit;color:inherit;cursor:pointer}button:focus-visible{outline:3px solid #2d75a9;outline-offset:3px}
+.run{border:0;background:transparent;border-radius:6px;padding:8px 13px;font-size:14px;font-weight:580}.run[aria-pressed=true]{background:#fff;box-shadow:0 1px 4px #1c34242d}
+.pages{display:flex;align-items:stretch;gap:6px;border-bottom:1px solid var(--line);margin-bottom:17px;overflow-x:auto}
+.page{position:relative;white-space:nowrap;background:transparent;border:0;padding:9px 12px 12px;color:var(--soft);font-size:14px}
+.page[aria-pressed=true]{color:var(--ink);font-weight:700;box-shadow:inset 0 -3px var(--ink)}.page .count{font:12px var(--mono);display:inline-block;margin-left:7px}.page .attention{color:var(--fail)}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:17px;align-items:start}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.card-head{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:16px 20px;border-bottom:1px solid var(--line)}
+h2{font-size:17px;font-weight:640;letter-spacing:-.028em}.counter{font:12px var(--mono);color:var(--soft)}
+.preview{display:grid;justify-items:center;align-items:start;padding:20px;background:#dfe7e1}
+.preview img{display:block;max-width:100%;height:auto;max-height:500px;object-fit:contain;box-shadow:0 3px 12px #19372b21;border:1px solid #cbd4cf;background:white}
+.stack{display:grid;gap:16px}.checks{list-style:none;margin:0;padding:0}.check{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 20px}.check+.check{border-top:1px solid #e6ece9}
+.check>div{min-width:0}.check b{display:block;font-size:14px;font-weight:620}.expected{font:13px var(--mono);color:var(--soft);overflow-wrap:anywhere}
+.status{font-size:12px;font-weight:650;line-height:1.4;white-space:nowrap;padding:3px 8px;border-radius:4px}
+.found{color:var(--pass);background:var(--pass-bg)}.missing{color:var(--fail);background:var(--fail-bg)}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;margin:0;padding:16px 20px 20px;font:13px/1.65 var(--mono);color:#2d4751;max-height:340px;overflow:auto}
+.explain{padding:13px 20px;background:#fafbf9;color:var(--soft);font-size:13px;border-top:1px solid var(--line)}.empty{color:var(--soft);padding:22px}
+@media(max-width:720px){header>div,main{padding-left:15px;padding-right:15px}.intro{display:block;padding-top:24px}.controls{width:fit-content;margin-top:14px}.grid{grid-template-columns:1fr}.preview img{max-height:380px}.card-head{padding:13px 16px}.check{padding:12px 16px}}
+@media print{body{background:white}header,.pages,.controls{display:none}.grid{grid-template-columns:1fr 1fr}.intro{padding-top:4px}.card{break-inside:avoid}.preview img{max-height:440px}}
+.fallback{padding-top:28px}.fallback h2{margin-top:18px}.fallback li{margin-bottom:6px}
+</style></head>
+<body><header><div><span class="brand-mark" aria-hidden="true">≡</span>PDF extraction check</div></header>
+<noscript><style>#interactive{display:none}</style><main class="fallback">__STATIC_RESULTS__</main></noscript>
+<main id="interactive"><div class="intro"><div><h1 id="title"></h1><p class="sub" id="summary" aria-live="polite"></p></div><div class="controls" id="runs" role="group" aria-label="Extraction method"></div></div>
+<nav class="pages" id="pages" aria-label="Checked pages"></nav>
+<div class="grid"><section class="card"><div class="card-head"><h2>Original page</h2><span class="counter" id="source-number"></span></div><div class="preview" id="preview"></div></section>
+<div class="stack"><section class="card"><div class="card-head"><h2>Expected text</h2><span class="counter" id="page-score"></span></div><ul class="checks" id="checks"></ul></section>
+<section class="card"><div class="card-head"><h2>Extracted text</h2><span class="counter" id="run-label"></span></div><pre id="excerpt"></pre><p class="explain" id="message" hidden></p></section></div></div>
+</main>
+<script id="audit-data" type="application/json">__REPORT_DATA__</script>
+<script>
+"use strict";
+const report = JSON.parse(document.getElementById("audit-data").textContent);
+const pages = [...new Set(report.checks.map(check => check.page))].sort((a, b) => a - b);
+const el = id => document.getElementById(id);
+function element(tag, cls, text) {
+  const node = document.createElement(tag);
+  if (cls) node.className = cls;
+  if (text !== undefined) node.textContent = text;
+  return node;
+}
+function button(text, cls, pressed, action) {
+  const node = element("button", cls, text);
+  node.type = "button";
+  node.setAttribute("aria-pressed", String(pressed));
+  node.addEventListener("click", action);
+  return node;
+}
+let runIndex = 0;
+const firstFailure = report.runs[0].outcomes.findIndex(value => value !== "Found");
+let currentPage = firstFailure < 0 ? pages[0] : report.checks[firstFailure].page;
+el("title").textContent = report.document;
+document.title = report.document + " · PDF extraction check";
+function draw() {
+  const run = report.runs[runIndex];
+  const rows = report.checks.map((check, index) => ({...check, status: run.outcomes[index]}));
+  const passed = rows.filter(check => check.status === "Found").length;
+  el("summary").textContent = passed + " of " + rows.length + " checks passed across " + pages.length + (pages.length === 1 ? " page." : " pages.");
+  el("runs").replaceChildren(...report.runs.map((r, i) => button(r.label, "run", i === runIndex, () => {runIndex = i; draw(); el("runs").children[i].focus();})));
+  el("pages").replaceChildren(...pages.map((p, index) => {
+    const checks = rows.filter(c => c.page === p);
+    const found = checks.filter(c => c.status === "Found").length;
+    const b = button("Page " + p, "page", p === currentPage, () => {currentPage = p; draw(); el("pages").children[index].focus();});
+    b.append(element("span", "count" + (found === checks.length ? "" : " attention"), found + "/" + checks.length));
+    return b;
+  }));
+  el("source-number").textContent = "Page " + currentPage;
+  const data = report.images[currentPage];
+  if (data) {
+    const img = element("img");
+    img.alt = report.document + ", original page " + currentPage;
+    img.src = data;
+    el("preview").replaceChildren(img);
+  } else {
+    el("preview").replaceChildren(element("p", "empty", "Include the original PDF with --pdf to see this page."));
+  }
+  const selected = rows.filter(c => c.page === currentPage);
+  el("page-score").textContent = selected.filter(c => c.status === "Found").length + " / " + selected.length;
+  el("checks").replaceChildren(...selected.map(c => {
+    const item = element("li", "check");
+    const names = element("div");
+    names.append(element("b", "", c.label), element("span", "expected", c.text));
+    item.append(names, element("span", "status " + (c.status === "Found" ? "found" : "missing"), c.status));
+    return item;
+  }));
+  el("run-label").textContent = run.label;
+  el("excerpt").textContent = run.text[currentPage] || "";
+  const msg = el("message");
+  const unmapped = selected.some(c => c.status === "Unmapped");
+  const absent = selected.some(c => c.status === "Page missing");
+  const note = unmapped ? "This export has no page boundaries. Add numbered page markers to check where the text occurs." :
+               absent ? "The export contains no entry for this page." :
+               !run.text[currentPage] ? "The export has an empty entry for this page." : "";
+  msg.hidden = !note;
+  msg.textContent = note;
+}
+draw();
+</script></body></html>

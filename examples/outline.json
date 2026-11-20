@@ -1,0 +1,15 @@
+{
+  "document": "Shipping label",
+  "checks": [
+    {
+      "page": 1,
+      "label": "Route",
+      "text": "West dock"
+    },
+    {
+      "page": 1,
+      "label": "Service level",
+      "text": "EXPRESS"
+    }
+  ]
+}
